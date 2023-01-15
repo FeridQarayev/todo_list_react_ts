@@ -1,21 +1,11 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addTodo } from "../redux/todoSlice/todoSlice";
-interface IItem {
-  id: number;
-  title: string;
-  complated: boolean;
-}
-interface IItems {
-  items: IItem[];
-  activeFilter: string;
-}
 const Form = () => {
-  const selectiss = (state: IItems) => state.items;
-  const items = useSelector(selectiss);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
-  const submitHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
+    console.log("Salammm");
     e.preventDefault();
     if (inputRef.current) {
       dispatch(addTodo(inputRef.current.value));
@@ -23,7 +13,7 @@ const Form = () => {
     }
   };
   return (
-    <form onSubmit={(e: any) => submitHandler(e)}>
+    <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitHandler(e)}>
       <input
         ref={inputRef}
         className="new-todo"

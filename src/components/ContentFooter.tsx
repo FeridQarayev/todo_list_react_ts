@@ -14,7 +14,6 @@ interface IState {
 }
 const ContentFooter = () => {
   const items = useSelector((state: IState) => state.todos.items);
-  console.log(items);
 
   const dispatch = useDispatch();
   const activeFilter = useSelector((state: IState) => state.todos.activeFilter);
