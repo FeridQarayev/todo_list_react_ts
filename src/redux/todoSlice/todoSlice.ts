@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-let id = 4;
+let id = 0;
 interface IItem {
   id: number;
   title: string;
@@ -8,23 +8,7 @@ interface IItem {
 export const todoSlice = createSlice({
   name: "todos",
   initialState: {
-    items: [
-      {
-        id: 1,
-        title: "HTML",
-        complated: false,
-      },
-      {
-        id: 2,
-        title: "CSS",
-        complated: true,
-      },
-      {
-        id: 3,
-        title: "JS",
-        complated: false,
-      },
-    ],
+    items: Array<IItem>(),
     activeFilter: "all",
     allComplated: false,
   },
@@ -35,21 +19,34 @@ export const todoSlice = createSlice({
         (item) => item.id === id
       );
       if (item) item.complated = !item.complated;
+      localStorage.setItem("item", JSON.stringify(state.items));
     },
     addTodo: (state, action: PayloadAction<string>) => {
-      console.log("geldi", action.payload);
       state.items.push({
         id: id,
         title: action.payload,
         complated: false,
       });
       id++;
+      localStorage.setItem("item", JSON.stringify(state.items));
     },
     deleteTodo: (state, action: PayloadAction<{ id: number }>) => {
       const { id } = action.payload;
       const target: IItem | undefined = state.items.find(
-        (item) => item.id === id
+        (item: IItem) => item.id === id
       );
+      const targetLocal = localStorage.getItem("item");
+      if (targetLocal != null) {
+        const datas: IItem[] = JSON.parse(targetLocal);
+        const data: IItem | undefined = datas.find(
+          (item: IItem) => item.id === id
+        );
+        if (data) {
+          const indexOfTargetLocal: number = datas.indexOf(data);
+          datas.splice(indexOfTargetLocal, 1);
+          localStorage.setItem("item", JSON.stringify(datas));
+        }
+      }
       if (target) {
         const indexOfTarget: number = state.items.indexOf(target);
         state.items.splice(indexOfTarget, 1);
@@ -60,9 +57,9 @@ export const todoSlice = createSlice({
     },
     clearCompleted: (state) => {
       state.items = state.items.filter((item) => item.complated === false);
+      localStorage.setItem("item", JSON.stringify(state.items));
     },
     allToggle: (state) => {
-      console.log("Girdii");
       if (state.allComplated) {
         state.items.map((item: IItem) => {
           item.complated = false;
@@ -75,8 +72,12 @@ export const todoSlice = createSlice({
         state.allComplated = true;
       }
     },
+    setLocalList: (state, action: PayloadAction<IItem>) => {
+      state.items.push(action.payload);
+    },
   },
 });
+
 export const {
   toggle,
   addTodo,
@@ -84,5 +85,6 @@ export const {
   clearCompleted,
   changeActiveFilter,
   allToggle,
+  setLocalList,
 } = todoSlice.actions;
 export default todoSlice.reducer;
