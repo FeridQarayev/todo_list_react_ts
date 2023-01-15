@@ -26,9 +26,10 @@ export const todoSlice = createSlice({
       },
     ],
     activeFilter: "all",
+    allComplated: false,
   },
   reducers: {
-    toggle: (state, action: PayloadAction<{id:number}>) => {
+    toggle: (state, action: PayloadAction<{ id: number }>) => {
       const { id } = action.payload;
       const item: IItem | undefined = state.items.find(
         (item) => item.id === id
@@ -36,7 +37,7 @@ export const todoSlice = createSlice({
       if (item) item.complated = !item.complated;
     },
     addTodo: (state, action: PayloadAction<string>) => {
-      console.log("geldi",action.payload);
+      console.log("geldi", action.payload);
       state.items.push({
         id: id,
         title: action.payload,
@@ -44,7 +45,7 @@ export const todoSlice = createSlice({
       });
       id++;
     },
-    deleteTodo: (state, action: PayloadAction<{id:number}>) => {
+    deleteTodo: (state, action: PayloadAction<{ id: number }>) => {
       const { id } = action.payload;
       const target: IItem | undefined = state.items.find(
         (item) => item.id === id
@@ -60,6 +61,20 @@ export const todoSlice = createSlice({
     clearCompleted: (state) => {
       state.items = state.items.filter((item) => item.complated === false);
     },
+    allToggle: (state) => {
+      console.log("Girdii");
+      if (state.allComplated) {
+        state.items.map((item: IItem) => {
+          item.complated = false;
+        });
+        state.allComplated = false;
+      } else {
+        state.items.map((item: IItem) => {
+          item.complated = true;
+        });
+        state.allComplated = true;
+      }
+    },
   },
 });
 export const {
@@ -68,5 +83,6 @@ export const {
   deleteTodo,
   clearCompleted,
   changeActiveFilter,
+  allToggle,
 } = todoSlice.actions;
 export default todoSlice.reducer;

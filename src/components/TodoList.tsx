@@ -8,7 +8,7 @@ interface IItem {
   complated: boolean;
 }
 interface IState {
-  todos: { activeFilter: string; items: IItem[] };
+  todos: { activeFilter: string; items: IItem[]; allComplated: boolean };
 }
 const TodoList = () => {
   const items = useSelector((state: IState) => state.todos.items);
